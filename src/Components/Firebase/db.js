@@ -18,6 +18,7 @@ class Firebase {
   }
 
   todos = () => this.db.ref("/todos");
+  lists = () => this.db.ref("/lists");
 
   addTodo = title => {
     const todo = { title, completed: false };
