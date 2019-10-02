@@ -9,11 +9,12 @@ export class TodoList extends Component {
   state = { todos: "" };
 
   async componentDidMount() {
+    const { selectedList } = this.props;
+
     this.props.firebase.todos().on("value", snapshot => {
       this.setState({
         todos: snapshot.val()
       });
-      console.log(this.state);
     });
   }
 
@@ -48,7 +49,6 @@ export class TodoList extends Component {
 
     return (
       <div>
-        {console.log("loaded", todos)}
         <TodoListBase todos={this.state.todos} onSubmit={this.addTodo} onChange={this.completeTodo} />
       </div>
     );
