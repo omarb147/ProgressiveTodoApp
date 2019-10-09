@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import NavBar from "./Components/NavBar";
+// import NavBar from "./Components/NavBar";
 import Todos from "./Pages/Todos";
+import "antd/dist/antd.css";
 
 function App() {
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <BrowserRouter>
         <Route path="/" exact component={Todos} />
       </BrowserRouter>

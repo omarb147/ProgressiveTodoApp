@@ -1,16 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, Component } from "react";
 import TodoList from "../Components/TodoList";
-import Lists from "../Components/Lists";
+import PageLayout from "../Components/Layout";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import { withFirebase } from "../Components/Firebase";
 
-const Todos = () => {
-  const [selectedList, setSelectedList] = useState("");
-  const [selectedListId, setSelectedListId] = useState("");
-  return (
-    <div>
-      <Lists selectedList={selectedList} setSelectedList={setSelectedList} />
-      <TodoList selectedList={selectedList} />
-    </div>
-  );
+class TodosPageBase extends Component {
+  state = { todoList: {} };
+
+  async componentDidUpdate(prevProps) {
+    const { firebase, selectedList } = this.props;
+
+    if (selectedList && prevProps.selectedList !== selectedList) {
+      console.log("list selected");
+      await firebase.db.ref(`lists/${selectedList}`).on("value", async snapshot => {
+        const todoList = { ...snapshot.val(), key: selectedList };
+        this.setState({ todoList });
+      });
+    }
+  }
+
+  render() {
+    const { todoList } = this.state;
+    return (
+      <PageLayout>
+        <TodoList key={todoList.key} todoList={todoList} />
+      </PageLayout>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return { selectedList: state.selectedList };
 };
 
-export default Todos;
+const TodosPage = compose(
+  connect(
+    mapStateToProps,
+    null
+  ),
+  withFirebase
+)(TodosPageBase);
+
+export default TodosPage;

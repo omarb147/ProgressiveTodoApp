@@ -5,4 +5,5 @@ export const selectListReducer = (state = "", action) => {
     case C.SELECT_LIST:
       return action.listId;
   }
+  return state;
 };

@@ -23,9 +23,12 @@ class Firebase {
   selectTodo = todoId => this.db.ref(`/todos/${todoId}`);
   selectedList = selectedList => this.db.ref(`/lists/${selectedList}`);
 
-  addTodo = title => {
-    const todo = { title, completed: false };
-    this.db.ref("/todos").push(todo);
+  addTodo = (listId, title) => {
+    const todo = { title, completed: false, lists: { [listId]: true } };
+    this.db
+      .ref("/todos")
+      .push(todo)
+      .then(newEntry => this.db.ref(`/lists/${listId}/todos/${newEntry.key}`).set(true));
   };
 
   addList = name => {
