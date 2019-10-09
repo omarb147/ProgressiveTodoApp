@@ -21,7 +21,8 @@ export class TodoListBase extends Component {
   //6. CHECKBOX HANDLER
 
   componentDidMount() {
-    const { firebase, selectedList } = this.props;
+    const { firebase } = this.props;
+    const { selectedList } = this.props;
 
     this.setState({ loading: true });
     if (selectedList) {
@@ -65,11 +66,6 @@ export class TodoListBase extends Component {
   render() {
     const { todoList, todos, loading } = this.state;
     const { firebase, selectedList } = this.props;
-    // this.setTodosListner();
-
-    {
-      console.log(todos);
-    }
 
     return (
       <>

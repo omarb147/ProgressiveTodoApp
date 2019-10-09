@@ -7,7 +7,6 @@ class AddTodoForm extends Component {
     const { form, addTodo } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
         addTodo(values.title);
       }
     });

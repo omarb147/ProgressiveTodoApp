@@ -9,7 +9,7 @@ function App() {
     <>
       {/* <NavBar /> */}
       <BrowserRouter>
-        <Route path="/" exact component={Todos} />
+        <Route path="/" component={Todos} />
       </BrowserRouter>
     </>
   );
