@@ -21,7 +21,7 @@ class Firebase {
   lists = () => this.db.ref("/lists");
 
   selectTodo = todoId => this.db.ref(`/todos/${todoId}`);
-  selectedList = selectedList => this.db.ref(`/lists/${selectedList}`);
+  list = selectedList => this.db.ref(`/lists/${selectedList}`);
 
   addTodo = (listId, title) => {
     const todo = { title, completed: false, lists: { [listId]: true } };
@@ -31,12 +31,31 @@ class Firebase {
       .then(newEntry => this.db.ref(`/lists/${listId}/todos/${newEntry.key}`).set(true));
   };
 
+  deleteTodo = (todoId, listId) => {
+    this.db.ref(`/todos/${todoId}`).remove(() => {
+      this.db.ref(`/lists/${listId}/todos/${todoId}`).set(null);
+    });
+  };
+
   addList = name => {
     const list = { name };
     this.db.ref("/lists").push(list);
   };
 
-  editTodo = (id, data) => this.db.ref(`/todos/${id}`).update(data);
+  deleteList = listId => {
+    this.db.ref(`/lists/${listId}`).set(null, () => {
+      this.db.ref(`/todos/`).once("value", snapshot => {
+        const todos = snapshot.val();
+        Object.keys(todos)
+          .filter(key => todos[key].lists && todos[key].lists[listId])
+          .forEach(key => this.db.ref(`/todos/${key}/`).set(null));
+      });
+    });
+  };
+
+  editTodo = (id, data) => {
+    this.db.ref(`/todos/${id}`).update(data);
+  };
 }
 
 export default Firebase;

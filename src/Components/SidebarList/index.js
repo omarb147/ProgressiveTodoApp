@@ -32,6 +32,10 @@ class SidebarListBase extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.firebase.lists().off();
+  }
+
   itemSelectHandler = data => {};
 
   render() {

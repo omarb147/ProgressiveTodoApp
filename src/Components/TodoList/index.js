@@ -1,102 +1,118 @@
 import React, { Component } from "react";
 import { withFirebase } from "../Firebase";
-import { List, Form, Checkbox } from "antd";
+import { compose } from "recompose";
+import { connect } from "react-redux";
+import { List, Form, Checkbox, Icon, PageHeader } from "antd";
 import AddTodoForm from "./AddTodoForm";
+import { selectList } from "../../Utils/actions";
+import { Button } from "antd/lib/radio";
 
-export class TodoList extends Component {
-  state = { loading: null, error: null };
+const INITIAL_STATE = { loading: false, error: null, todoList: {}, todos: [] };
+
+export class TodoListBase extends Component {
+  state = { ...INITIAL_STATE };
   //TODO
 
   //1. SET UP BASE LIST - DONE
-  //2. GET DATA FROM FIREBASE INTO LIST
-  //3. FORM FOR ADDING DATA INTO LIST
+  //2. GET DATA FROM FIREBASE INTO LIST - DONE
+  //3. FORM FOR ADDING DATA INTO LIST - DONE
+  //4. DELETE TODO FROM LIST
+  //5. ADD TODO TO THE FAVOURITES LIST
+  //6. CHECKBOX HANDLER
 
   componentDidMount() {
-    this.setTodosListner();
-  }
-
-  setTodosListner = async () => {
-    const { firebase, todoList } = this.props;
+    const { firebase, selectedList } = this.props;
 
     this.setState({ loading: true });
+    if (selectedList) {
+      firebase.list(selectedList).on("value", snapshot => {
+        const todoList = { ...snapshot.val(), key: selectedList };
+        this.setState({ todoList });
 
-    const listLength = todoList.todos ? Object.keys(todoList.todos).length : 0;
-    const todos = [];
-    if (listLength > 0) {
-      // await Promise.all(
-      //   Object.keys(todoList.todos).map(async key => {
-      //     await firebase.selectTodo(key).on("value", snapshot => {
-      //       const todo = { key, ...snapshot.val() };
-      //       todos.push(todo);
-      //     });
-      //   })
-      // );
-      // for (let key in todoList.todos) {
-      //   console.log("key", key);
-      //   await firebase.selectTodo(key).on("value", snapshot => {
-      //     const todo = { key, ...snapshot.val() };
-      //     todos.push(todo);
-      //   });
-      // }
-      // console.log("updated");
-      // console.log("todos");
-      // this.setState({ todos, loading: false });
-
-      //DONT LIKE THIS CODE!!!
-      await Object.keys(todoList.todos).forEach(async (key, index) => {
-        await firebase.selectTodo(key).on("value", snapshot => {
-          const todo = { key, ...snapshot.val() };
-          todos.push(todo);
-          if (index == listLength - 1) {
+        if (todoList.todos) {
+          firebase.todos().on("value", snapshot => {
+            const todosObj = snapshot.val();
+            const todos = Object.keys(todosObj)
+              .filter(key => todoList.todos.hasOwnProperty(key))
+              .map(key => ({ ...todosObj[key], key }));
             this.setState({ todos, loading: false });
-            console.log("done");
-          }
-        });
+          });
+        } else {
+          this.setState({ loading: false });
+        }
       });
     } else {
-      this.setState({ todos, loading: false });
-    }
-  };
-
-  async componentWillUnmount() {
-    const { firebase, todoList } = this.props;
-    const listLength = todoList.todos ? Object.keys(todoList.todos).length : 0;
-    if (listLength > 0) {
-      for (let key in todoList.todos) {
-        await firebase.selectTodo(key).off();
-      }
-      console.log("unset listners");
+      this.setState({ ...INITIAL_STATE });
     }
   }
 
-  checkBoxHandler = e => {
-    console.log(e.target);
+  componentWillUnmount() {
+    // this.props.firebase.list(this.props.selectedList).off();
+    this.props.firebase.todos().off();
+  }
+
+  checkBoxHandler = (e, key) => {
+    const { checked } = e.target;
+    this.props.firebase.editTodo(key, { completed: checked });
+  };
+
+  deleteList = () => {
+    const { firebase, selectedList, selectList } = this.props;
+    firebase.deleteList(selectedList);
+    selectList("");
   };
 
   render() {
-    const { todos, loading } = this.state;
-    const { todoList } = this.props;
+    const { todoList, todos, loading } = this.state;
+    const { firebase, selectedList } = this.props;
+    // this.setTodosListner();
+
+    {
+      console.log(todos);
+    }
 
     return (
       <>
-        <h1>{todoList ? todoList.name : ""}</h1>
+        {selectedList && (
+          <PageHeader
+            title={todoList.name}
+            extra={[
+              <Button key="1" onClick={this.deleteList}>
+                Delete List
+              </Button>
+            ]}
+          ></PageHeader>
+        )}
         <List
           itemLayout="horizontal"
           dataSource={todos}
           loading={loading}
           renderItem={todo => (
-            <List.Item key={todo.key}>
+            <List.Item
+              key={todo.key}
+              actions={[
+                <a key="list-loadmore-favourites" onClick={e => this.props.firebase.deleteTodo(todo.key, selectedList)}>
+                  <Icon type="star" />
+                </a>,
+                <a key="list-loadmore-delete" onClick={e => firebase.deleteTodo(todo.key, selectedList)}>
+                  <Icon type="close-circle" />
+                </a>
+              ]}
+            >
               <List.Item.Meta
                 title={todo.title}
-                avatar={<Checkbox onChange={this.checkBoxHandler} checked={todo.complete} />}
+                avatar={<Checkbox onChange={e => this.checkBoxHandler(e, todo.key)} checked={todo.completed} />}
               ></List.Item.Meta>
             </List.Item>
           )}
         >
           {todoList.key && (
-            <List.Item>
-              <AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, todoList.key)} />
-            </List.Item>
+            <>
+              <List.Item>
+                <List.Item.Meta title={<AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, todoList.key)} />}></List.Item.Meta>
+              </List.Item>
+              <List.Item></List.Item>
+            </>
           )}
         </List>
       </>
@@ -104,4 +120,12 @@ export class TodoList extends Component {
   }
 }
 
-export default withFirebase(TodoList);
+const TodoList = compose(
+  connect(
+    null,
+    { selectList }
+  ),
+  withFirebase
+)(TodoListBase);
+
+export default TodoList;
