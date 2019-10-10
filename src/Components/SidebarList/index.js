@@ -5,7 +5,6 @@ import AddListForm from "./AddListForm";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import { selectList } from "../../Utils/actions";
-import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
 
@@ -45,6 +44,7 @@ class SidebarListBase extends Component {
     return (
       <Sider
         width={300}
+        style={{ background: "#fff" }}
         // breakpoint="lg"
         // collapsedWidth="0"
         // onBreakpoint={broken => {
@@ -55,7 +55,8 @@ class SidebarListBase extends Component {
         // }}
       >
         <div className="logo" />
-        <Menu theme="dark" mode="inline" onSelect={({ key }) => this.props.selectList(key)}>
+
+        <Menu mode="inline" onSelect={({ key }) => this.props.selectList(key)}>
           {lists &&
             lists.map(list => {
               return (

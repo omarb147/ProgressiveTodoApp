@@ -1,12 +1,14 @@
 import React from "react";
-import { Layout, Menu, Breadcrumb, Icon } from "antd";
+import { Layout, Icon } from "antd";
 import SidebarList from "../SidebarList";
+import HeaderMenu from "../Header";
 
-const { Header, Content, Sider } = Layout;
+const { Content, Header } = Layout;
 
 const PageLayout = props => {
   return (
     <Layout style={{ height: "100vh" }}>
+      <HeaderMenu />
       <Layout>
         <SidebarList />
         <Header style={{ background: "#fff", padding: 0 }} />

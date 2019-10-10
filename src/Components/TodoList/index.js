@@ -11,18 +11,9 @@ const INITIAL_STATE = { loading: false, error: null, todoList: {}, todos: [] };
 
 export class TodoListBase extends Component {
   state = { ...INITIAL_STATE };
-  //TODO
-
-  //1. SET UP BASE LIST - DONE
-  //2. GET DATA FROM FIREBASE INTO LIST - DONE
-  //3. FORM FOR ADDING DATA INTO LIST - DONE
-  //4. DELETE TODO FROM LIST
-  //5. ADD TODO TO THE FAVOURITES LIST
-  //6. CHECKBOX HANDLER
 
   componentDidMount() {
-    const { firebase } = this.props;
-    const { selectedList } = this.props;
+    const { firebase, selectedList } = this.props;
 
     this.setState({ loading: true });
     if (selectedList) {

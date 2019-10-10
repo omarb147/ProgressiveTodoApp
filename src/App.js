@@ -7,7 +7,6 @@ import "antd/dist/antd.css";
 function App() {
   return (
     <>
-      {/* <NavBar /> */}
       <BrowserRouter>
         <Route path="/" component={Todos} />
       </BrowserRouter>
