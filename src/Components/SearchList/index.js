@@ -10,15 +10,15 @@ const INITIAL_STATE = { loading: true, results: [] };
 export class SearchListBase extends Component {
   state = { ...INITIAL_STATE };
   componentDidMount() {
-    const { firebase, searchQuery } = this.props;
+    const { firebase, searchQuery, user } = this.props;
 
     if (searchQuery) {
-      firebase.todos().once("value", snapshot => {
+      firebase.todos(user).once("value", snapshot => {
         const todosObj = { ...snapshot.val() };
         const todosList = Object.keys(todosObj).map(key => ({ ...todosObj[key], key }));
         const results = todosList.filter(todo => todo.title.includes(searchQuery));
 
-        firebase.lists().once("value", snapshot => {
+        firebase.lists(user).once("value", snapshot => {
           const TodoLists = snapshot.val();
           const updatedResults = results.map(todo => {
             const listDetails = Object.keys(todo.lists).map(key => ({ name: TodoLists[key].name, key }));
@@ -32,8 +32,8 @@ export class SearchListBase extends Component {
   }
 
   componentWillUnmount() {
-    const { firebase, searchQuery } = this.props;
-    firebase.todos().off();
+    const { firebase, searchQuery, user } = this.props;
+    firebase.todos(user).off();
   }
 
   listOnClickHandler = listId => {

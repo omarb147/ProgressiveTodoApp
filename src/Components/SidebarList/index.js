@@ -18,8 +18,9 @@ class SidebarListBase extends Component {
   //3. Delete List from DB - WILL DO
 
   componentDidMount() {
+    const { user } = this.props;
     this.setState({ loading: true });
-    this.props.firebase.lists().on("value", snapshot => {
+    this.props.firebase.lists(user).on("value", snapshot => {
       const listsObj = snapshot.val();
       if (listsObj) {
         const listsArray = Object.keys(listsObj).map(key => {
@@ -33,7 +34,7 @@ class SidebarListBase extends Component {
   }
 
   componentWillUnmount() {
-    this.props.firebase.lists().off();
+    this.props.firebase.lists(this.props.user).off();
   }
 
   itemSelectHandler = data => {};
@@ -67,7 +68,7 @@ class SidebarListBase extends Component {
               );
             })}
           <Menu.Item disabled={true}>
-            <AddListForm addList={name => this.props.firebase.addList(name)} />
+            <AddListForm addList={name => this.props.firebase.addList(this.props.user, name)} />
           </Menu.Item>
         </Menu>
       </Sider>

@@ -3,10 +3,10 @@ import "firebase/auth";
 import "firebase/database";
 
 const prodConfig = {
-  apiKey: process.env.FIREBASE_DEV_APIKEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  databaseURL: "https://fir-todos-60fd4.firebaseio.com",
-  projectId: process.env.FIREBASE_DEVE_PROJECT_ID
+  apiKey: process.env.REACT_APP_DEV_API_KEY,
+  authDomain: process.env.REACT_APP_DEV_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DEV_DATABASE_URL,
+  projectId: process.env.REACT_APP_DEV_PROJECT_ID
 };
 
 const config = process.env.NODE_ENV === "production" ? prodConfig : prodConfig;
@@ -15,46 +15,80 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.db = app.database();
+    this.auth = app.auth();
+    this.googleAuth = new app.auth.GoogleAuthProvider();
   }
 
-  todos = () => this.db.ref("/todos");
-  lists = () => this.db.ref("/lists");
+  todos = uid => this.db.ref(`/todos/${uid}`);
+  lists = uid => this.db.ref(`/lists/${uid}`);
+  users = () => this.db.ref("/users");
 
-  selectTodo = todoId => this.db.ref(`/todos/${todoId}`);
-  list = selectedList => this.db.ref(`/lists/${selectedList}`);
+  //** USER ACTIONS  ***//
+  createUser = (uid, userDetails) => {
+    this.db.ref(`/users/${uid}`).once("value", snapshot => {
+      const user = snapshot.val();
 
-  addTodo = (listId, title) => {
+      if (!user) {
+        const favourites = { name: "favourites", icon: "star", owner: uid };
+        const dueDate = { name: "Due Date", icon: "time", owner: uid };
+        this.db.ref(`/lists/${uid}`).push(favourites);
+        this.db.ref(`/lists/${uid}`).push(dueDate);
+
+        this.db.ref(`/users/${uid}`).set({ ...userDetails });
+      }
+    });
+  };
+
+  //** AUTH ACTIONS  ***//
+  onSignInWithGoogle = () =>
+    this.auth.signInWithPopup(this.googleAuth).then(res => {
+      const { uid, email, displayName, photoURL } = res.user;
+      const userDetails = { name: displayName, uid, avatar: photoURL, email };
+      this.createUser(uid, userDetails);
+    });
+
+  onSignOut = () => {};
+
+  //** TODOs ACTIONS  ***//
+  selectTodo = (uid, todoId) => this.db.ref(`/todos/${uid}/${todoId}`);
+  list = (uid, selectedList) => this.db.ref(`/lists/${uid}/${selectedList}`);
+
+  addTodo = (uid, listId, title) => {
     const todo = { title, completed: false, lists: { [listId]: true } };
     this.db
-      .ref("/todos")
+      .ref(`/todos/${uid}`)
       .push(todo)
-      .then(newEntry => this.db.ref(`/lists/${listId}/todos/${newEntry.key}`).set(true));
+      .then(newEntry => this.db.ref(`/lists/${uid}/${listId}/todos/${newEntry.key}`).set(true));
   };
 
-  deleteTodo = (todoId, listId) => {
-    this.db.ref(`/todos/${todoId}`).remove(() => {
-      this.db.ref(`/lists/${listId}/todos/${todoId}`).set(null);
+  deleteTodo = (uid, todoId, listId) => {
+    this.db.ref(`/todos/${uid}/${todoId}`).remove(() => {
+      this.db.ref(`/lists/${uid}/${listId}/todos/${todoId}`).set(null);
     });
   };
 
-  addList = name => {
-    const list = { name };
-    this.db.ref("/lists").push(list);
+  editTodo = (uid, id, data) => {
+    this.db.ref(`/todos/${uid}/${id}`).update(data);
   };
 
-  deleteList = listId => {
-    this.db.ref(`/lists/${listId}`).set(null, () => {
-      this.db.ref(`/todos/`).once("value", snapshot => {
+  //** LIST ACTIONS  ***//
+
+  addList = (uid, name) => {
+    const list = { name };
+    this.db.ref(`/lists/${uid}`).push(list);
+  };
+
+  deleteList = (uid, listId) => {
+    this.db.ref(`/lists/${uid}/${listId}`).set(null, () => {
+      this.db.ref(`/todos/${uid}`).once("value", snapshot => {
         const todos = snapshot.val();
-        Object.keys(todos)
-          .filter(key => todos[key].lists && todos[key].lists[listId])
-          .forEach(key => this.db.ref(`/todos/${key}/`).set(null));
+        if (todos) {
+          Object.keys(todos)
+            .filter(key => todos[key].lists && todos[key].lists[listId])
+            .forEach(key => this.db.ref(`/todos/${uid}/${key}/`).set(null));
+        }
       });
     });
-  };
-
-  editTodo = (id, data) => {
-    this.db.ref(`/todos/${id}`).update(data);
   };
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Layout, Icon, Menu } from "antd";
 import SearchForm from "./SearchForm";
+import SignOut from "../Logout";
 
 const { Header } = Layout;
 
@@ -14,6 +15,9 @@ export class HeaderMenu extends Component {
           </Menu.Item>
           <Menu.Item>
             <SearchForm />
+          </Menu.Item>
+          <Menu.Item>
+            <SignOut />
           </Menu.Item>
         </Menu>
       </Header>

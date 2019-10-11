@@ -13,24 +13,26 @@ export class TodoListBase extends Component {
   state = { ...INITIAL_STATE };
 
   componentDidMount() {
-    const { firebase, selectedList } = this.props;
-
+    const { firebase, selectedList, user } = this.props;
     this.setState({ loading: true });
     if (selectedList) {
-      firebase.list(selectedList).on("value", snapshot => {
+      firebase.list(user, selectedList).on("value", snapshot => {
         const todoList = { ...snapshot.val(), key: selectedList };
         this.setState({ todoList });
 
         if (todoList.todos) {
-          firebase.todos().on("value", snapshot => {
+          firebase.todos(user).on("value", snapshot => {
             const todosObj = snapshot.val();
-            const todos = Object.keys(todosObj)
-              .filter(key => todoList.todos.hasOwnProperty(key))
-              .map(key => ({ ...todosObj[key], key }));
-            this.setState({ todos, loading: false });
+
+            if (todosObj) {
+              const todos = Object.keys(todosObj)
+                .filter(key => todoList.todos.hasOwnProperty(key))
+                .map(key => ({ ...todosObj[key], key }));
+              this.setState({ todos, loading: false });
+            }
           });
         } else {
-          this.setState({ loading: false });
+          this.setState({ todos: [], loading: false });
         }
       });
     } else {
@@ -40,23 +42,24 @@ export class TodoListBase extends Component {
 
   componentWillUnmount() {
     // this.props.firebase.list(this.props.selectedList).off();
-    this.props.firebase.todos().off();
+    this.props.firebase.todos(this.props.user).off();
   }
 
   checkBoxHandler = (e, key) => {
+    const { user } = this.props;
     const { checked } = e.target;
-    this.props.firebase.editTodo(key, { completed: checked });
+    this.props.firebase.editTodo(user, key, { completed: checked });
   };
 
   deleteList = () => {
-    const { firebase, selectedList, selectList } = this.props;
-    firebase.deleteList(selectedList);
+    const { firebase, selectedList, selectList, user } = this.props;
+    firebase.deleteList(user, selectedList);
     selectList("");
   };
 
   render() {
     const { todoList, todos, loading } = this.state;
-    const { firebase, selectedList } = this.props;
+    const { firebase, selectedList, user } = this.props;
 
     return (
       <>
@@ -78,10 +81,10 @@ export class TodoListBase extends Component {
             <List.Item
               key={todo.key}
               actions={[
-                <a key="list-loadmore-favourites" onClick={e => this.props.firebase.deleteTodo(todo.key, selectedList)}>
+                <a key="list-loadmore-favourites" onClick={e => this.props.firebase.deleteTodo(user, todo.key, selectedList)}>
                   <Icon type="star" />
                 </a>,
-                <a key="list-loadmore-delete" onClick={e => firebase.deleteTodo(todo.key, selectedList)}>
+                <a key="list-loadmore-delete" onClick={e => firebase.deleteTodo(user, todo.key, selectedList)}>
                   <Icon type="close-circle" />
                 </a>
               ]}
@@ -96,7 +99,9 @@ export class TodoListBase extends Component {
           {todoList.key && (
             <>
               <List.Item>
-                <List.Item.Meta title={<AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, todoList.key)} />}></List.Item.Meta>
+                <List.Item.Meta
+                  title={<AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, user, todoList.key)} />}
+                ></List.Item.Meta>
               </List.Item>
               <List.Item></List.Item>
             </>

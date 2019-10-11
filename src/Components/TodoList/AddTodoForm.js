@@ -5,6 +5,7 @@ class AddTodoForm extends Component {
   submitHandler = event => {
     event.preventDefault();
     const { form, addTodo } = this.props;
+    console.log(addTodo);
     form.validateFields((err, values) => {
       if (!err) {
         addTodo(values.title);

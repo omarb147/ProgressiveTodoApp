@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Icon } from "antd";
 import SidebarList from "../SidebarList";
 import HeaderMenu from "../Header";
+import { withAuthentication } from "../Authentication";
 
 const { Content, Header } = Layout;
 
@@ -10,7 +11,7 @@ const PageLayout = props => {
     <Layout style={{ height: "100vh" }}>
       <HeaderMenu />
       <Layout>
-        <SidebarList />
+        <SidebarList user={props.user} />
         <Header style={{ background: "#fff", padding: 0 }} />
         <Content style={{ margin: "24px 16px 0" }}>
           <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>{props.children}</div>
@@ -20,4 +21,4 @@ const PageLayout = props => {
   );
 };
 
-export default PageLayout;
+export default withAuthentication(PageLayout);
