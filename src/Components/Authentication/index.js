@@ -1,3 +1,3 @@
-import withAuthentication from "./withAuth";
+import withAuthentication from "./withAuthentication";
 
 export { withAuthentication };

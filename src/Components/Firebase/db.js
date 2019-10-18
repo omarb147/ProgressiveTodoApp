@@ -1,6 +1,7 @@
 import app from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import gravatar from "gravatar";
 
 const prodConfig = {
   apiKey: process.env.REACT_APP_DEV_API_KEY,
@@ -33,7 +34,6 @@ class Firebase {
         const dueDate = { name: "Due Date", icon: "time", owner: uid };
         this.db.ref(`/lists/${uid}`).push(favourites);
         this.db.ref(`/lists/${uid}`).push(dueDate);
-
         this.db.ref(`/users/${uid}`).set({ ...userDetails });
       }
     });
@@ -41,9 +41,12 @@ class Firebase {
 
   //** AUTH ACTIONS  ***//
   onSignInWithGoogle = () =>
-    this.auth.signInWithPopup(this.googleAuth).then(res => {
+    this.auth.signInWithPopup(this.googleAuth).then(async res => {
       const { uid, email, displayName, photoURL } = res.user;
-      const userDetails = { name: displayName, uid, avatar: photoURL, email };
+      let avatar = photoURL;
+      if (!avatar) avatar = await gravatar(email);
+      const userDetails = { name: displayName, uid, avatar, email };
+
       this.createUser(uid, userDetails);
     });
 

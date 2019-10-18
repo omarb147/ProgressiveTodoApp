@@ -25,7 +25,13 @@ export class SearchFormBase extends Component {
       <Form layout="inline" onChange={this.changeHandler}>
         <Form.Item>
           {getFieldDecorator("search", { setFieldsValue: this.props.searchQuery, trigger: "onChange" })(
-            <Input prefix={<Icon type="search" />} placeholder="input search text" style={{ width: 200 }} allowClear={true} />
+            <Input
+              prefix={<Icon type="search" style={{ color: "#fff" }} />}
+              placeholder="input search text"
+              className="search_bar"
+              style={{ width: 200 }}
+              allowClear={true}
+            />
           )}
         </Form.Item>
       </Form>

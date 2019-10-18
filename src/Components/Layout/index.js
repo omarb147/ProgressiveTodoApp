@@ -10,7 +10,7 @@ const PageLayout = props => {
   return (
     <Layout style={{ height: "100vh" }}>
       <HeaderMenu />
-      <Layout>
+      <Layout theme="dark">
         <SidebarList user={props.user} />
         <Header style={{ background: "#fff", padding: 0 }} />
         <Content style={{ margin: "24px 16px 0" }}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, Icon } from "antd";
 import { withFirebase } from "../Firebase";
 
 class SignOutBase extends React.Component {
@@ -8,7 +8,11 @@ class SignOutBase extends React.Component {
   };
 
   render() {
-    return <Button onClick={this.onClickHandler}>Logout</Button>;
+    return (
+      <Button shape="round" onClick={this.onClickHandler} icon="logout" size="large">
+        Logout
+      </Button>
+    );
   }
 }
 

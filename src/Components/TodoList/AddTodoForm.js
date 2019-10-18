@@ -18,7 +18,10 @@ class AddTodoForm extends Component {
     const { getFieldDecorator } = form;
 
     return (
-      <Form onSubmit={this.submitHandler}>
+      <Form onSubmit={this.submitHandler} style={{ display: "flex" }}>
+        <Form.Item>
+          <Icon type="plus-square" sytle={{ size: "2em" }} />
+        </Form.Item>
         <Form.Item>{getFieldDecorator("title")(<Input placeholder="Add Todo" />)}</Form.Item>
       </Form>
     );

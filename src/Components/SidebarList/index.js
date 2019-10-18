@@ -46,6 +46,7 @@ class SidebarListBase extends Component {
       <Sider
         width={300}
         style={{ background: "#fff" }}
+
         // breakpoint="lg"
         // collapsedWidth="0"
         // onBreakpoint={broken => {
@@ -67,10 +68,14 @@ class SidebarListBase extends Component {
                 </Menu.Item>
               );
             })}
-          <Menu.Item disabled={true}>
-            <AddListForm addList={name => this.props.firebase.addList(this.props.user, name)} />
-          </Menu.Item>
         </Menu>
+        {lists && (
+          <Menu selectable={false}>
+            <Menu.Item>
+              <AddListForm addList={name => this.props.firebase.addList(this.props.user, name)} />
+            </Menu.Item>
+          </Menu>
+        )}
       </Sider>
     );
   }

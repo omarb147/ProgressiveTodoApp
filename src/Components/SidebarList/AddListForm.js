@@ -17,8 +17,11 @@ class AddListForm extends Component {
     const { form } = this.props;
     const { getFieldDecorator } = form;
     return (
-      <Form layout="inline" onSubmit={this.submitHandler}>
-        <Form.Item>{getFieldDecorator("name")(<Input style={{ color: "#fff" }} placeholder="Add List" />)}</Form.Item>
+      <Form layout="inline" onSubmit={this.submitHandler} className="add_list">
+        <Form.Item sytle={{ padding: "10px", marginRight: "0px" }}>
+          <Icon type="plus" />
+        </Form.Item>
+        <Form.Item>{getFieldDecorator("name")(<Input placeholder="Add List" />)}</Form.Item>
       </Form>
     );
   }

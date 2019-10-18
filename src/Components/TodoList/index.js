@@ -75,6 +75,7 @@ export class TodoListBase extends Component {
         )}
         <List
           itemLayout="horizontal"
+          footer={todos && <AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, user, todoList.key)} />}
           dataSource={todos}
           loading={loading}
           renderItem={todo => (
@@ -95,18 +96,7 @@ export class TodoListBase extends Component {
               ></List.Item.Meta>
             </List.Item>
           )}
-        >
-          {todoList.key && (
-            <>
-              <List.Item>
-                <List.Item.Meta
-                  title={<AddTodoForm addTodo={this.props.firebase.addTodo.bind(null, user, todoList.key)} />}
-                ></List.Item.Meta>
-              </List.Item>
-              <List.Item></List.Item>
-            </>
-          )}
-        </List>
+        ></List>
       </>
     );
   }
