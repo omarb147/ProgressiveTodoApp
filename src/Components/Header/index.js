@@ -9,11 +9,13 @@ export class HeaderMenu extends Component {
   render() {
     return (
       <Header className="header">
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]} style={{ lineHeight: "64px" }}>
-          <Menu.Item>
-            <div className="logo">Todos</div>
+        <Menu selectable={false} theme="dark" mode="horizontal" style={{ display: "flex", alignItems: "flex-end" }}>
+          <Menu.Item style={{ flex: 1 }}>
+            <div className="logo" style={{ fontSize: "1.5em" }}>
+              Todos
+            </div>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item style={{ flex: 4 }}>
             <SearchForm />
           </Menu.Item>
           <Menu.Item>

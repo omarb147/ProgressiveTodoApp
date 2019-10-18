@@ -5,6 +5,7 @@ import Styled from "styled-components";
 import * as ROUTES from "./Constants/Routes";
 import TodosPage from "./Pages/TodosPage";
 import SignInPage from "./Pages/SignInPage";
+import "./index.css";
 
 const AppContainer = Styled.div`
 height: 100vh;

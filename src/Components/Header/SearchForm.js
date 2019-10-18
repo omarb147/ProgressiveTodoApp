@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Icon } from "antd";
 import { compose } from "recompose";
 import { connect } from "react-redux";
 import { onSearch } from "../../Utils/actions";
@@ -25,7 +25,7 @@ export class SearchFormBase extends Component {
       <Form layout="inline" onChange={this.changeHandler}>
         <Form.Item>
           {getFieldDecorator("search", { setFieldsValue: this.props.searchQuery, trigger: "onChange" })(
-            <Search placeholder="input search text" style={{ width: 200 }} allowClear={true} />
+            <Input prefix={<Icon type="search" />} placeholder="input search text" style={{ width: 200 }} allowClear={true} />
           )}
         </Form.Item>
       </Form>
