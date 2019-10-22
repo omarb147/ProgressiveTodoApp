@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/ProgressiveTodoApp/static/css/main.2aa4f4e4.chunk.css",
+    "main.js": "/ProgressiveTodoApp/static/js/main.2908d01d.chunk.js",
+    "main.js.map": "/ProgressiveTodoApp/static/js/main.2908d01d.chunk.js.map",
+    "runtime-main.js": "/ProgressiveTodoApp/static/js/runtime-main.df7ae83f.js",
+    "runtime-main.js.map": "/ProgressiveTodoApp/static/js/runtime-main.df7ae83f.js.map",
+    "static/css/2.802837ff.chunk.css": "/ProgressiveTodoApp/static/css/2.802837ff.chunk.css",
+    "static/js/2.bb7e904b.chunk.js": "/ProgressiveTodoApp/static/js/2.bb7e904b.chunk.js",
+    "static/js/2.bb7e904b.chunk.js.map": "/ProgressiveTodoApp/static/js/2.bb7e904b.chunk.js.map",
+    "index.html": "/ProgressiveTodoApp/index.html",
+    "precache-manifest.d71f52384f2d7de152e06ac27d68b676.js": "/ProgressiveTodoApp/precache-manifest.d71f52384f2d7de152e06ac27d68b676.js",
+    "service-worker.js": "/ProgressiveTodoApp/service-worker.js",
+    "static/css/2.802837ff.chunk.css.map": "/ProgressiveTodoApp/static/css/2.802837ff.chunk.css.map",
+    "static/css/main.2aa4f4e4.chunk.css.map": "/ProgressiveTodoApp/static/css/main.2aa4f4e4.chunk.css.map"
+  }
+}
