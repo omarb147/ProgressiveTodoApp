@@ -1,7 +1,8 @@
 # Progressive Todo App (Microsoft Todos clone) 
 >Todo app developed with React and Firebase, based on Microsoft todos.
 
-## Demo [Link to Demo](https://fir-todos-60fd4.firebaseapp.com)
+## Demo 
+[Link to Demo](https://fir-todos-60fd4.firebaseapp.com)
 <img src="todos.png" width="100%">
 
 ## Features
