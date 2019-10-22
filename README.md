@@ -2,7 +2,7 @@
 >Todo app developed with React and Firebase, based on Microsoft todos.
 
 ## Demo
-<img src="todoapp.png" width="100%">
+<img src="todos.png" width="100%">
 
 ## Features
 * Firebase realtime database used for data persistance in the app
